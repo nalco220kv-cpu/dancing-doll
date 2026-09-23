@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shopping India - Mobiles, Electronics, Fashion, Grocery & More | Flipkart Clone</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        flipkartBlue: '#2874f0',
+                        flipkartYellow: '#ffe11b',
+                        flipkartOrange: '#fb641b',
+                        flipkartGreen: '#388e3c',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for horizontal categories */
+        ::-webkit-scrollbar { height: 6px; width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-flipkartBlue text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
+            <!-- Logo & Explore Plus -->
+            <div class="flex items-center space-x-1 cursor-pointer shrink-0" onclick="resetFilters()">
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold italic tracking-wider text-flipkartYellow">Flipkart</span>
+                    <span class="text-[10px] italic text-slate-100 flex items-center gap-0.5">Explore <span class="text-flipkartYellow font-semibold">Plus</span> <i class="fa-solid fa-plus text-[8px] text-flipkartYellow"></i></span>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl relative">
+                <div class="flex bg-white rounded-sm shadow-sm overflow-hidden">
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search for products, brands and more" class="w-full py-2 px-4 text-sm text-slate-800 focus:outline-none">
+                    <button class="bg-white text-flipkartBlue px-4 flex items-center justify-center hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-magnifying-glass text-flipkartBlue"></i>
+                    </button>
+                </div>
+                <!-- Search Suggestions Dropdown -->
+                <div id="search-suggestions" class="absolute top-full left-0 right-0 bg-white text-slate-800 shadow-xl rounded-b-sm mt-0.5 hidden z-50 max-h-60 overflow-y-auto border border-slate-200"></div>
+            </div>
+
+            <!-- Header Right Actions -->
+            <div class="flex items-center space-x-6 text-sm font-medium">
+                <!-- Login Dropdown / Account -->
+                <div class="relative group">
+                    <button class="bg-white text-flipkartBlue font-semibold px-8 py-1.5 rounded-sm shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <span>Login</span>
+                    </button>
+                    <div class="absolute right-0 w-60 bg-white text-slate-800 shadow-2xl rounded-sm py-2 hidden group-hover:block z-50 border border-slate-100">
+                        <div class="px-4 py-2 border-b border-slate-100 flex justify-between items-center text-xs">
+                            <span class="font-semibold text-slate-500">New Customer?</span>
+                            <a href="#" class="text-flipkartBlue font-bold hover:underline">Sign Up</a>
+                        </div>
+                        <a href="#" class="px-4 py-2.5 hover:bg-slate-50 flex items-center gap-3 text-xs font-normal"><i class="fa-regular fa-circle-user w-4 text-flipkartBlue"></i> My Profile</a>
+                        <a href="#" class="px-4 py-2.5 hover:bg-slate-50 flex items-center gap-3 text-xs font-normal"><i class="fa-solid fa-bolt w-4 text-flipkartBlue"></i> Flipkart Plus Zone</a>
+                        <a href="#" class="px-4 py-2.5 hover:bg-slate-50 flex items-center gap-3 text-xs font-normal" onclick="openCart()"><i class="fa-solid fa-box w-4 text-flipkartBlue"></i> Orders</a>
+                        <a href="#" class="px-4 py-2.5 hover:bg-slate-50 flex items-center gap-3 text-xs font-normal" onclick="toggleWishlistModal()"><i class="fa-regular fa-heart w-4 text-flipkartBlue"></i> Wishlist</a>
+                    </div>
+                </div>
+
+                <!-- Become a Seller -->
+                <a href="#" class="hidden md:inline-block hover:text-flipkartYellow transition">Become a Seller</a>
+
+                <!-- More Dropdown -->
+                <div class="relative group hidden lg:block">
+                    <button class="flex items-center gap-1 hover:text-flipkartYellow transition">
+                        <span>More</span>
+                        <i class="fa-solid fa-angle-down text-xs"></i>
+                    </button>
+                    <div class="absolute right-0 w-56 bg-white text-slate-800 shadow-xl rounded-sm py-2 hidden group-hover:block z-50 border border-slate-100">
+                        <a href="#" class="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 text-xs"><i class="fa-solid fa-bell w-4 text-flipkartBlue"></i> Notification Preferences</a>
+                        <a href="#" class="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 text-xs"><i class="fa-solid fa-headset w-4 text-flipkartBlue"></i> 24x7 Customer Care</a>
+                        <a href="#" class="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 text-xs"><i class="fa-solid fa-chart-line w-4 text-flipkartBlue"></i> Advertise</a>
+                        <a href="#" class="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 text-xs"><i class="fa-solid fa-download w-4 text-flipkartBlue"></i> Download App</a>
+                    </div>
+                </div>
+
+                <!-- Cart Counter -->
+                <button onclick="openCart()" class="flex items-center gap-2 hover:text-flipkartYellow transition relative">
+                    <div class="relative">
+                        <i class="fa-solid fa-cart-shopping text-lg"></i>
+                        <span id="cart-badge" class="absolute -top-2 -right-3 bg-red-500 text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </div>
+                    <span class="font-semibold hidden sm:inline">Cart</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Navigation Strip -->
+    <nav class="bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap">
+            <div onclick="filterByCategory('all')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">All</span>
+            </div>
+            <div onclick="filterByCategory('Electronics')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-laptop text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">Electronics</span>
+            </div>
+            <div onclick="filterByCategory('Fashion')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-shirt text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">Fashion</span>
+            </div>
+            <div onclick="filterByCategory('Mobiles')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-mobile-screen text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">Mobiles</span>
+            </div>
+            <div onclick="filterByCategory('Appliances')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-tv text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">Appliances</span>
+            </div>
+            <div onclick="filterByCategory('Grocery')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-basket-shopping text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">Grocery</span>
+            </div>
+            <div onclick="filterByCategory('Toys')" class="flex flex-col items-center cursor-pointer group px-3 min-w-[70px]">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition">
+                    <i class="fa-solid fa-gamepad text-lg"></i>
+                </div>
+                <span class="text-xs font-semibold mt-1 group-hover:text-flipkartBlue">Toys & More</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-4 space-y-6">
+
+        <!-- Hero Carousel Section -->
+        <div class="relative rounded-lg overflow-hidden shadow-md bg-white h-[220px] sm:h-[320px] md:h-[380px]">
+            <div id="carousel-inner" class="flex transition-transform duration-500 h-full">
+                <!-- Slide 1 -->
+                <div class="min-w-full h-full bg-gradient-to-r from-blue-600 to-indigo-800 flex items-center justify-between px-8 md:px-16 text-white relative">
+                    <div class="max-w-md space-y-3 z-10">
+                        <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-2.5 py-1 rounded">BIG BILLION DAYS</span>
+                        <h2 class="text-2xl md:text-4xl font-bold">Top Smartphones on Massive Discount</h2>
+                        <p class="text-sm text-slate-200">Grab latest 5G devices with exchange offers up to ₹15,000 off.</p>
+                        <button onclick="filterByCategory('Mobiles')" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold px-5 py-2 rounded shadow transition text-sm">Shop Now</button>
+                    </div>
+                    <img src="https://placehold.co/400x300/1e40af/ffffff?text=Smartphones" alt="Smartphones" class="hidden sm:block h-3/4 object-contain rounded-lg shadow-xl">
+                </div>
+                <!-- Slide 2 -->
+                <div class="min-w-full h-full bg-gradient-to-r from-purple-700 to-pink-700 flex items-center justify-between px-8 md:px-16 text-white relative">
+                    <div class="max-w-md space-y-3 z-10">
+                        <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-2.5 py-1 rounded">FASHION CARNIVAL</span>
+                        <h2 class="text-2xl md:text-4xl font-bold">Trendy Styles Up To 70% Off</h2>
+                        <p class="text-sm text-slate-200">Upgrade your wardrobe with top brands and seasonal collections.</p>
+                        <button onclick="filterByCategory('Fashion')" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold px-5 py-2 rounded shadow transition text-sm">Explore Fashion</button>
+                    </div>
+                    <img src="https://placehold.co/400x300/831843/ffffff?text=Fashion+Sale" alt="Fashion" class="hidden sm:block h-3/4 object-contain rounded-lg shadow-xl">
+                </div>
+                <!-- Slide 3 -->
+                <div class="min-w-full h-full bg-gradient-to-r from-emerald-600 to-teal-800 flex items-center justify-between px-8 md:px-16 text-white relative">
+                    <div class="max-w-md space-y-3 z-10">
+                        <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-2.5 py-1 rounded">ELECTRONICS EXTRAVAGANZA</span>
+                        <h2 class="text-2xl md:text-4xl font-bold">Laptops, Audio & Smart TVs</h2>
+                        <p class="text-sm text-slate-200">No cost EMI starting from ₹1,999/month on premium gadgets.</p>
+                        <button onclick="filterByCategory('Electronics')" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold px-5 py-2 rounded shadow transition text-sm">Discover Deals</button>
+                    </div>
+                    <img src="https://placehold.co/400x300/065f46/ffffff?text=Electronics" alt="Electronics" class="hidden sm:block h-3/4 object-contain rounded-lg shadow-xl">
+                </div>
+            </div>
+
+            <!-- Carousel Controls -->
+            <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-800 p-2.5 rounded-full shadow transition z-20">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-800 p-2.5 rounded-full shadow transition z-20">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
+        </div>
+
+        <!-- Deals of the Day Section -->
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <h2 class="text-xl font-bold text-slate-800">Top Deals of the Day</h2>
+                    <div class="flex items-center space-x-1.5 text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                        <i class="fa-regular fa-clock text-flipkartBlue"></i>
+                        <span id="countdown-timer">14 : 32 : 18</span>
+                        <span>Left</span>
+                    </div>
+                </div>
+                <button onclick="filterByCategory('all')" class="bg-flipkartBlue text-white text-xs font-bold px-4 py-2 rounded shadow hover:bg-blue-600 transition">View All</button>
+            </div>
+
+            <!-- Deals Product Horizontal Scroll / Grid -->
+            <div id="deals-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- All Products Grid with Filters -->
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                <h2 id="catalog-title" class="text-xl font-bold text-slate-800">Suggested For You</h2>
+                <div class="flex items-center space-x-3 text-sm">
+                    <span class="text-slate-500 font-medium">Sort By:</span>
+                    <select id="sort-select" onchange="sortProducts(this.value)" class="bg-slate-50 border border-slate-300 rounded px-3 py-1.5 focus:outline-none">
+                        <option value="default">Relevance</option>
+                        <option value="low-high">Price: Low to High</option>
+                        <option value="high-low">Price: High to Low</option>
+                        <option value="rating">Customer Rating</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Cart Drawer Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 z-50 flex justify-end hidden transition-opacity">
+        <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-300">
+            <!-- Cart Header -->
+            <div class="p-4 bg-flipkartBlue text-white flex items-center justify-between shadow">
+                <h3 class="font-bold text-lg">My Shopping Cart (<span id="cart-count-header">0</span>)</h3>
+                <button onclick="closeCart()" class="text-white hover:text-yellow-300 text-xl font-bold">&times;</button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-4 divide-y divide-slate-100">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Cart Footer & Checkout -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600">Subtotal:</span>
+                    <span id="cart-subtotal" class="font-bold text-slate-900">₹0</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600">Delivery Charges:</span>
+                    <span class="text-green-600 font-semibold">FREE</span>
+                </div>
+                <div class="flex justify-between text-base font-bold pt-2 border-t border-slate-200">
+                    <span>Total Amount:</span>
+                    <span id="cart-total" class="text-flipkartBlue">₹0</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-flipkartOrange hover:bg-orange-600 text-white font-bold py-3 rounded shadow transition uppercase text-sm tracking-wide">
+                    Place Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 bg-flipkartBlue text-white flex justify-between items-center">
+                <h3 class="font-bold text-lg"><i class="fa-regular fa-heart mr-2"></i> My Wishlist</h3>
+                <button onclick="toggleWishlistModal()" class="text-white hover:text-yellow-300 text-xl font-bold">&times;</button>
+            </div>
+            <div id="wishlist-items-container" class="p-4 overflow-y-auto space-y-4 flex-1 divide-y divide-slate-100">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 text-xs mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-5 gap-8">
+            <div class="space-y-3">
+                <h4 class="text-slate-500 font-semibold uppercase tracking-wider">About</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">About Us</a></li>
+                    <li><a href="#" class="hover:underline">Careers</a></li>
+                    <li><a href="#" class="hover:underline">Flipkart Stories</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h4 class="text-slate-500 font-semibold uppercase tracking-wider">Group Companies</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:underline">Myntra</a></li>
+                    <li><a href="#" class="hover:underline">Cleartrip</a></li>
+                    <li><a href="#" class="hover:underline">Shopsy</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h4 class="text-slate-500 font-semibold uppercase tracking-wider">Help</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:underline">Payments</a></li>
+                    <li><a href="#" class="hover:underline">Shipping</a></li>
+                    <li><a href="#" class="hover:underline">Cancellation & Returns</a></li>
+                    <li><a href="#" class="hover:underline">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h4 class="text-slate-500 font-semibold uppercase tracking-wider">Consumer Policy</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:underline">Terms Of Use</a></li>
+                    <li><a href="#" class="hover:underline">Security</a></li>
+                    <li><a href="#" class="hover:underline">Privacy</a></li>
+                    <li><a href="#" class="hover:underline">Sitemap</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3 col-span-2 md:col-span-1 border-t md:border-t-0 pt-4 md:pt-0 border-slate-800">
+                <h4 class="text-slate-500 font-semibold uppercase tracking-wider">Mail Us:</h4>
+                <p class="leading-relaxed text-slate-400">Flipkart Internet Private Limited,<br>Buildings Alyssa, Begonia &<br>Clove Embassy Tech Village,<br>Outer Ring Road, Devarabeesanahalli Village,<br>Bengaluru, 560103, Karnataka, India</p>
+            </div>
+        </div>
+        <div class="bg-slate-950 py-4 text-center text-slate-500 text-xs border-t border-slate-800/60">
+            &copy; 2007-2026 FlipkartClone.com. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // Comprehensive Mock Products Dataset
+        const products = [
+            { id: 1, title: "Apple iPhone 15 (Black, 128 GB)", category: "Mobiles", price: 65999, originalPrice: 79900, rating: 4.6, reviews: 12450, image: "https://placehold.co/300x300/2563eb/ffffff?text=iPhone+15", isDeal: true },
+            { id: 2, title: "Samsung Galaxy S23 5G (Cream, 256 GB)", category: "Mobiles", price: 54999, originalPrice: 89999, rating: 4.5, reviews: 8930, image: "https://placehold.co/300x300/db2777/ffffff?text=Galaxy+S23", isDeal: true },
+            { id: 3, title: "ASUS TUF Gaming A15 Laptop", category: "Electronics", price: 62990, originalPrice: 92990, rating: 4.4, reviews: 4310, image: "https://placehold.co/300x300/4f46e5/ffffff?text=ASUS+TUF+Laptop", isDeal: true },
+            { id: 4, title: "Sony WH-1000XM4 Noise Cancelling Headphones", category: "Electronics", price: 19990, originalPrice: 29990, rating: 4.7, reviews: 15200, image: "https://placehold.co/300x300/0ea5e9/ffffff?text=Sony+Headphones", isDeal: true },
+            { id: 5, title: "Nike Air Zoom Pegasus Running Shoes", category: "Fashion", price: 4995, originalPrice: 9995, rating: 4.3, reviews: 2100, image: "https://placehold.co/300x300/16a34a/ffffff?text=Nike+Shoes", isDeal: true },
+            { id: 6, title: "Puma Casual Hooded Sweatshirt", category: "Fashion", price: 1799, originalPrice: 3999, rating: 4.1, reviews: 1150, image: "https://placehold.co/300x300/ca8a04/ffffff?text=Puma+Hoodie", isDeal: false },
+            { id: 7, title: "LG 7 kg 5 Star Inverter Fully-Automatic Washing Machine", category: "Appliances", price: 24990, originalPrice: 35990, rating: 4.5, reviews: 3400, image: "https://placehold.co/300x300/9333ea/ffffff?text=LG+Washing+Machine", isDeal: false },
+            { id: 8, title: "Samsung 43 inch Crystal 4K UHD Smart LED TV", category: "Appliances", price: 29990, originalPrice: 47990, rating: 4.4, reviews: 6200, image: "https://placehold.co/300x300/dc2626/ffffff?text=Samsung+4K+TV", isDeal: false },
+            { id: 9, title: "Aashirvaad Superior MP Atta (10 kg)", category: "Grocery", price: 415, originalPrice: 450, rating: 4.6, reviews: 18900, image: "https://placehold.co/300x300/ea580c/ffffff?text=Aashirvaad+Atta", isDeal: false },
+            { id: 10, title: "Tata Salt Vacuum Evaporated Iodised (1 kg)", category: "Grocery", price: 28, originalPrice: 30, rating: 4.8, reviews: 45000, image: "https://placehold.co/300x300/0284c7/ffffff?text=Tata+Salt", isDeal: false },
+            { id: 11, title: "Hot Wheels 10-Car Pack Die-Cast Vehicles", category: "Toys", price: 1499, originalPrice: 1999, rating: 4.7, reviews: 3200, image: "https://placehold.co/300x300/7c3aed/ffffff?text=Hot+Wheels", isDeal: false },
+            { id: 12, title: "LEGO Creator 3-in-1 Mighty Dinosaur Toy", category: "Toys", price: 1299, originalPrice: 1699, rating: 4.8, reviews: 980, image: "https://placehold.co/300x300/e11d48/ffffff?text=LEGO+Dino", isDeal: false }
+        ];
+
+        let currentFilteredProducts = [...products];
+        let cart = [];
+        let wishlist = [];
+        let currentSlide = 0;
+
+        // Initialize application on load
+        window.onload = function() {
+            renderDeals();
+            renderProducts(products);
+            startCarouselAutoPlay();
+            startCountdownTimer();
+        };
+
+        // Render Top Deals
+        function renderDeals() {
+            const container = document.getElementById('deals-container');
+            const deals = products.filter(p => p.isDeal);
+            container.innerHTML = deals.map(product => {
+                const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+                const isWishlisted = wishlist.includes(product.id);
+                return `
+                    <div class="border border-slate-200 rounded p-3 flex flex-col justify-between hover:shadow-lg transition relative group">
+                        <button onclick="toggleWishlist(${product.id})" class="absolute top-3 right-3 text-slate-300 hover:text-red-500 z-10 transition">
+                            <i class="fa-${isWishlisted ? 'solid text-red-500' : 'regular'} fa-heart text-lg"></i>
+                        </button>
+                        <div class="h-40 flex items-center justify-center mb-3 overflow-hidden">
+                            <img src="${product.image}" alt="${product.title}" class="max-h-full object-contain group-hover:scale-105 transition duration-300">
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-sm text-slate-800 line-clamp-1 mb-1">${product.title}</h3>
+                            <div class="flex items-center space-x-1.5 mb-2">
+                                <span class="bg-green-700 text-white text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                    ${product.rating} <i class="fa-solid fa-star text-[8px]"></i>
+                                </span>
+                                <span class="text-slate-400 text-xs">(${product.reviews.toLocaleString()})</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-bold text-base text-slate-900">₹${product.price.toLocaleString()}</span>
+                                <span class="text-xs text-slate-400 line-through">₹${product.originalPrice.toLocaleString()}</span>
+                                <span class="text-xs font-semibold text-green-600">${discount}% off</span>
+                            </div>
+                        </div>
+                        <button onclick="addToCart(${product.id})" class="mt-3 w-full bg-flipkartYellow hover:bg-yellow-400 text-slate-900 font-bold py-1.5 rounded text-xs transition shadow-sm">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Main Product Catalog Grid
+        function renderProducts(list) {
+            const container = document.getElementById('product-grid');
+            if (list.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500">No products found matching your criteria.</div>`;
+                return;
+            }
+            container.innerHTML = list.map(product => {
+                const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+                const isWishlisted = wishlist.includes(product.id);
+                return `
+                    <div class="border border-slate-200 rounded p-4 flex flex-col justify-between hover:shadow-lg transition relative group">
+                        <button onclick="toggleWishlist(${product.id})" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 z-10 transition">
+                            <i class="fa-${isWishlisted ? 'solid text-red-500' : 'regular'} fa-heart text-xl"></i>
+                        </button>
+                        <div class="h-48 flex items-center justify-center mb-4 overflow-hidden">
+                            <img src="${product.image}" alt="${product.title}" class="max-h-full object-contain group-hover:scale-105 transition duration-300">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-800 line-clamp-1 mb-1">${product.title}</h3>
+                            <div class="flex items-center space-x-1.5 mb-2">
+                                <span class="bg-green-700 text-white text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                    ${product.rating} <i class="fa-solid fa-star text-[8px]"></i>
+                                </span>
+                                <span class="text-slate-400 text-xs">(${product.reviews.toLocaleString()})</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-bold text-lg text-slate-900">₹${product.price.toLocaleString()}</span>
+                                <span class="text-xs text-slate-400 line-through">₹${product.originalPrice.toLocaleString()}</span>
+                                <span class="text-xs font-semibold text-green-600">${discount}% off</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-4">
+                            <button onclick="addToCart(${product.id})" class="bg-flipkartYellow hover:bg-yellow-400 text-slate-900 font-bold py-2 rounded text-xs transition shadow-sm">
+                                Add to Cart
+                            </button>
+                            <button onclick="buyNow(${product.id})" class="bg-flipkartOrange hover:bg-orange-600 text-white font-bold py-2 rounded text-xs transition shadow-sm">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter products by category
+        function filterByCategory(category) {
+            const titleEl = document.getElementById('catalog-title');
+            if (category === 'all') {
+                currentFilteredProducts = [...products];
+                titleEl.textContent = "Suggested For You";
+            } else {
+                currentFilteredProducts = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+                titleEl.textContent = `${category} Deals & Products`;
+            }
+            renderProducts(currentFilteredProducts);
+            window.scrollTo({ top: 500, behavior: 'smooth' });
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            currentFilteredProducts = [...products];
+            document.getElementById('catalog-title').textContent = "Suggested For You";
+            document.getElementById('search-input').value = '';
+            renderProducts(currentFilteredProducts);
+        }
+
+        // Real-time search & autocomplete suggestions
+        function handleSearch(query) {
+            const suggestionsEl = document.getElementById('search-suggestions');
+            if (!query.trim()) {
+                suggestionsEl.classList.add('hidden');
+                currentFilteredProducts = [...products];
+                renderProducts(currentFilteredProducts);
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const matches = products.filter(p => p.title.toLowerCase().includes(lowerQuery) || p.category.toLowerCase().includes(lowerQuery));
+            
+            if (matches.length > 0) {
+                suggestionsEl.innerHTML = matches.map(m => `
+                    <div onclick="selectSearchSuggestion('${m.title}')" class="px-4 py-2 hover:bg-slate-100 cursor-pointer text-xs flex justify-between items-center">
+                        <span>${m.title}</span>
+                        <span class="text-slate-400 text-[10px]">in ${m.category}</span>
+                    </div>
+                `).join('');
+                suggestionsEl.classList.remove('hidden');
+            } else {
+                suggestionsEl.innerHTML = `<div class="px-4 py-2 text-xs text-slate-500">No matching products found</div>`;
+                suggestionsEl.classList.remove('hidden');
+            }
+
+            currentFilteredProducts = matches;
+            renderProducts(currentFilteredProducts);
+        }
+
+        function selectSearchSuggestion(title) {
+            document.getElementById('search-input').value = title;
+            document.getElementById('search-suggestions').classList.add('hidden');
+            currentFilteredProducts = products.filter(p => p.title.toLowerCase() === title.toLowerCase());
+            renderProducts(currentFilteredProducts);
+        }
+
+        // Sort Products
+        function sortProducts(criteria) {
+            let sorted = [...currentFilteredProducts];
+            if (criteria === 'low-high') {
+                sorted.sort((a, b) => a.price - b.price);
+            } else if (criteria === 'high-low') {
+                sorted.sort((a, b) => b.price - a.price);
+            } else if (criteria === 'rating') {
+                sorted.sort((a, b) => b.rating - a.rating);
+            }
+            renderProducts(sorted);
+        }
+
+        // Cart Management
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateCartBadge();
+            renderCartItems();
+            openCart();
+        }
+
+        function buyNow(productId) {
+            addToCart(productId);
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+            }
+            updateCartBadge();
+            renderCartItems();
+        }
+
+        function updateCartBadge() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-badge').textContent = totalCount;
+            document.getElementById('cart-count-header').textContent = totalCount;
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-container');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="py-16 text-center space-y-3">
+                        <i class="fa-solid fa-cart-shopping text-4xl text-slate-300"></i>
+                        <p class="text-slate-500 font-medium">Your cart is empty!</p>
+                        <button onclick="closeCart()" class="bg-flipkartBlue text-white text-xs font-bold px-4 py-2 rounded">Shop Now</button>
+                    </div>
+                `;
+                document.getElementById('cart-subtotal').textContent = '₹0';
+                document.getElementById('cart-total').textContent = '₹0';
+                return;
+            }
+
+            let subtotal = 0;
+            container.innerHTML = cart.map(item => {
+                subtotal += item.price * item.quantity;
+                return `
+                    <div class="flex items-center justify-between py-3 gap-4">
+                        <img src="${item.image}" alt="${item.title}" class="w-16 h-16 object-contain rounded border border-slate-100 p-1">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-semibold text-slate-800 line-clamp-1">${item.title}</h4>
+                            <p class="text-xs font-bold text-slate-900 mt-1">₹${item.price.toLocaleString()}</p>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold hover:bg-slate-300">-</button>
+                                <span class="text-xs font-semibold px-2">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold hover:bg-slate-300">+</button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-red-500 text-sm">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cart-subtotal').textContent = `₹${subtotal.toLocaleString()}`;
+            document.getElementById('cart-total').textContent = `₹${subtotal.toLocaleString()}`;
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartBadge();
+            renderCartItems();
+        }
+
+        function openCart() {
+            document.getElementById('cart-modal').classList.remove('hidden');
+            renderCartItems();
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').classList.add('hidden');
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+            alert("Order placed successfully! Thank you for shopping with Flipkart Clone.");
+            cart = [];
+            updateCartBadge();
+            closeCart();
+        }
+
+        // Wishlist Management
+        function toggleWishlist(productId) {
+            const index = wishlist.indexOf(productId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+            } else {
+                wishlist.push(productId);
+            }
+            renderDeals();
+            renderProducts(currentFilteredProducts);
+        }
+
+        function toggleWishlistModal() {
+            const modal = document.getElementById('wishlist-modal');
+            const container = document.getElementById('wishlist-items-container');
+            
+            const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
+            if (wishlistedProducts.length === 0) {
+                container.innerHTML = `<div class="py-12 text-center text-slate-500">Your wishlist is empty. Click the heart icon on any product to save it here!</div>`;
+            } else {
+                container.innerHTML = wishlistedProducts.map(product => `
+                    <div class="flex items-center justify-between py-3 gap-4">
+                        <img src="${product.image}" alt="${product.title}" class="w-16 h-16 object-contain rounded border border-slate-100 p-1">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-semibold text-slate-800">${product.title}</h4>
+                            <p class="text-xs font-bold text-slate-900 mt-1">₹${product.price.toLocaleString()}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="addToCart(${product.id}); toggleWishlist(${product.id}); toggleWishlistModal();" class="bg-flipkartYellow px-3 py-1.5 rounded text-xs font-bold">Add to Cart</button>
+                            <button onclick="toggleWishlist(${product.id}); toggleWishlistModal(); toggleWishlistModal();" class="text-red-500 text-sm p-2"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            modal.classList.toggle('hidden');
+        }
+
+        // Carousel Logic
+        function nextSlide() {
+            const inner = document.getElementById('carousel-inner');
+            currentSlide = (currentSlide + 1) % 3;
+            inner.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function prevSlide() {
+            const inner = document.getElementById('carousel-inner');
+            currentSlide = (currentSlide - 1 + 3) % 3;
+            inner.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function startCarouselAutoPlay() {
+            setInterval(nextSlide, 5000);
+        }
+
+        // Countdown Timer simulation
+        function startCountdownTimer() {
+            let totalSeconds = 14 * 3600 + 32 * 60 + 18;
+            setInterval(() => {
+                if (totalSeconds > 0) totalSeconds--;
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                document.getElementById('countdown-timer').textContent = 
+                    `${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
